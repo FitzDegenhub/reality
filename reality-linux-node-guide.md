@@ -98,14 +98,34 @@ Create a directory for your node and download the required files:
 cd ~
 mkdir reality-node && cd reality-node
 
-# Download the core node software
-wget https://github.com/reality-foundation/linux-server/releases/download/v0.13.0/reality-core-assembly-0.0.0+996-a9c70fe2.jar
+# Get the latest release version automatically
+LATEST_RELEASE=$(curl -s https://api.github.com/repos/reality-foundation/linux-server/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+echo "Latest version: $LATEST_RELEASE"
 
-# Download the keytool for generating your wallet
-wget https://github.com/reality-foundation/linux-server/releases/download/v0.13.0/reality-keytool-assembly-0.0.0+996-a9c70fe2.jar
+# Get the JAR filenames from the latest release
+CORE_JAR=$(curl -s https://api.github.com/repos/reality-foundation/linux-server/releases/latest | grep "browser_download_url.*core-assembly.*\.jar" | cut -d '"' -f 4 | head -n 1)
+KEYTOOL_JAR=$(curl -s https://api.github.com/repos/reality-foundation/linux-server/releases/latest | grep "browser_download_url.*keytool-assembly.*\.jar" | cut -d '"' -f 4 | head -n 1)
+WALLET_JAR=$(curl -s https://api.github.com/repos/reality-foundation/linux-server/releases/latest | grep "browser_download_url.*wallet-assembly.*\.jar" | cut -d '"' -f 4 | head -n 1)
 
-# Download the wallet tool for viewing your node ID
-wget https://github.com/reality-foundation/linux-server/releases/download/v0.13.0/reality-wallet-assembly-0.0.0+996-a9c70fe2.jar
+# Download the JARs
+wget $CORE_JAR
+wget $KEYTOOL_JAR
+wget $WALLET_JAR
+
+# Show what was downloaded
+ls -lh *.jar
+```
+
+**Alternative: Manual download (if you know the version)**
+
+```bash
+# Replace v0.13.0 and version string with the latest from GitHub Releases
+VERSION_TAG="v0.13.0"
+VERSION_STRING="0.0.0+996-a9c70fe2"
+
+wget https://github.com/reality-foundation/linux-server/releases/download/${VERSION_TAG}/reality-core-assembly-${VERSION_STRING}.jar
+wget https://github.com/reality-foundation/linux-server/releases/download/${VERSION_TAG}/reality-keytool-assembly-${VERSION_STRING}.jar
+wget https://github.com/reality-foundation/linux-server/releases/download/${VERSION_TAG}/reality-wallet-assembly-${VERSION_STRING}.jar
 ```
 
 > **Note:** Check [GitHub Releases](https://github.com/reality-foundation/linux-server/releases) for the latest version.
@@ -117,7 +137,8 @@ wget https://github.com/reality-foundation/linux-server/releases/download/v0.13.
 Your keystore contains your node's private key and identity. Generate one using the keytool:
 
 ```bash
-java -jar reality-keytool-assembly-0.0.0+996-a9c70fe2.jar generate \
+# Use the keytool JAR (adjust filename if different version)
+java -jar reality-keytool-assembly-*.jar generate \
   --keystore node.p12 \
   --keyalias node \
   --password YOUR_SECURE_PASSWORD
@@ -139,7 +160,8 @@ export CL_KEYSTORE=./node.p12
 export CL_KEYALIAS=node
 export CL_PASSWORD=YOUR_SECURE_PASSWORD
 
-java -jar reality-wallet-assembly-0.0.0+996-a9c70fe2.jar show-id
+# Use the wallet JAR (adjust filename if different version)
+java -jar reality-wallet-assembly-*.jar show-id
 ```
 
 This will output a long hexadecimal string — this is your Node ID. Save it somewhere; you'll need it to start your node.
@@ -198,13 +220,15 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/root/reality-node
-ExecStart=/usr/bin/java -Xms2g -Xmx2g -jar /root/reality-node/reality-core-assembly-0.0.0+996-a9c70fe2.jar run-validator --keystore /root/reality-node/node.p12 --password YOUR_PASSWORD --keyalias node --ip YOUR_EXTERNAL_IP --collateral 0 --peer-id YOUR_NODE_ID --l0-ip YOUR_EXTERNAL_IP --startup-port 9000
+ExecStart=/bin/bash -c 'java -Xms2g -Xmx2g -jar /root/reality-node/reality-core-assembly-*.jar run-validator --keystore /root/reality-node/node.p12 --password YOUR_PASSWORD --keyalias node --ip YOUR_EXTERNAL_IP --collateral 0 --peer-id YOUR_NODE_ID --l0-ip YOUR_EXTERNAL_IP --startup-port 9000'
 Restart=always
 RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+> **Note:** Replace `YOUR_PASSWORD`, `YOUR_EXTERNAL_IP`, and `YOUR_NODE_ID` with your actual values. The `*` wildcard will match any version of the core JAR.
 
 Enable and start the service:
 
@@ -238,7 +262,8 @@ tmux new -s reality
 Start your validator node (replace the placeholders with your actual values):
 
 ```bash
-java -Xms2g -Xmx2g -jar reality-core-assembly-0.0.0+996-a9c70fe2.jar run-validator \
+# Use wildcard to match any version
+java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keystore node.p12 \
   --password YOUR_SECURE_PASSWORD \
   --keyalias node \
@@ -251,7 +276,7 @@ java -Xms2g -Xmx2g -jar reality-core-assembly-0.0.0+996-a9c70fe2.jar run-validat
 
 **Example with real values:**
 ```bash
-java -Xms2g -Xmx2g -jar reality-core-assembly-0.0.0+996-a9c70fe2.jar run-validator \
+java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keystore node.p12 \
   --password MySecurePass123 \
   --keyalias node \
@@ -415,7 +440,8 @@ export NODE_IP=$(curl -4 -s ifconfig.me)
 export NODE_ID="YOUR_NODE_ID"
 export NODE_PASSWORD="YOUR_SECURE_PASSWORD"
 
-java -Xms2g -Xmx2g -jar reality-core-assembly-0.0.0+996-a9c70fe2.jar run-validator \
+# Use wildcard to automatically use the latest JAR version
+java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keystore node.p12 \
   --password $NODE_PASSWORD \
   --keyalias node \
