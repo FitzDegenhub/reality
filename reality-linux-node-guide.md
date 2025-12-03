@@ -173,7 +173,7 @@ a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456789012
 
 ---
 
-## Step 7: Get Your Server's External IP
+## Step 7: Get Your Server's IP Address
 
 ```bash
 curl -4 -s ifconfig.me
@@ -220,7 +220,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/root/reality-node
-ExecStart=/bin/bash -c 'java -Xms2g -Xmx2g -jar /root/reality-node/reality-core-assembly-*.jar run-validator --keystore /root/reality-node/node.p12 --password YOUR_PASSWORD --keyalias node --ip YOUR_EXTERNAL_IP --collateral 0 --peer-id YOUR_NODE_ID --l0-ip YOUR_EXTERNAL_IP --startup-port 9000'
+ExecStart=/bin/bash -c 'java -Xms2g -Xmx2g -jar /root/reality-node/reality-core-assembly-*.jar run-validator --keystore /root/reality-node/node.p12 --password YOUR_PASSWORD --keyalias node --ip YOUR_SERVER_IP --collateral 0 --peer-id YOUR_NODE_ID --l0-ip YOUR_SERVER_IP --startup-port 9000'
 Restart=always
 RestartSec=10
 
@@ -228,7 +228,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-> **Note:** Replace `YOUR_PASSWORD`, `YOUR_EXTERNAL_IP`, and `YOUR_NODE_ID` with your actual values. The `*` wildcard will match any version of the core JAR.
+> **Note:** Replace `YOUR_PASSWORD`, `YOUR_SERVER_IP`, and `YOUR_NODE_ID` with your actual values. The `*` wildcard will match any version of the core JAR.
 
 Enable and start the service:
 
@@ -267,10 +267,10 @@ java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keystore node.p12 \
   --password YOUR_SECURE_PASSWORD \
   --keyalias node \
-  --ip YOUR_EXTERNAL_IP \
+  --ip YOUR_SERVER_IP \
   --collateral 0 \
   --peer-id YOUR_NODE_ID \
-  --l0-ip YOUR_EXTERNAL_IP \
+  --l0-ip YOUR_SERVER_IP \
   --startup-port 9000
 ```
 
@@ -302,10 +302,10 @@ tmux attach -t reality
 Check your node's status by visiting:
 
 ```bash
-curl http://YOUR_EXTERNAL_IP:9000/node/info
+curl http://YOUR_SERVER_IP:9000/node/info
 ```
 
-Or open in a browser: `http://YOUR_EXTERNAL_IP:9000/node/info`
+Or open in a browser: `http://YOUR_SERVER_IP:9000/node/info`
 
 You should see JSON output with your node information:
 ```json
@@ -346,7 +346,7 @@ curl -X POST http://127.0.0.1:9002/cluster/join \
 Check your node status again:
 
 ```bash
-curl http://YOUR_EXTERNAL_IP:9000/node/info
+curl http://YOUR_SERVER_IP:9000/node/info
 ```
 
 If successful, the state should change from `"ReadyToJoin"` to `"Observing"`:
@@ -399,7 +399,7 @@ sudo systemctl restart reality-node
 
 ### Check Node Status
 ```bash
-curl http://YOUR_EXTERNAL_IP:9000/node/info
+curl http://YOUR_SERVER_IP:9000/node/info
 ```
 
 ### View Node Logs
