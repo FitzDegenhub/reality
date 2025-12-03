@@ -168,7 +168,7 @@ This will output a long hexadecimal string — this is your Node ID. Save it som
 
 Example output:
 ```
-183d00412b31b5f3de360bf6545c99effa9d94dbdba48b2f36010ef264b5b1cb532d6a8816843999d7166ea4b4f70e834f6b50f4be3c5dc95479068b576fd720
+a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234
 ```
 
 ---
@@ -274,7 +274,7 @@ java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --startup-port 9000
 ```
 
-**Example with real values:**
+**Example with placeholder values:**
 ```bash
 java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keystore node.p12 \
@@ -282,7 +282,7 @@ java -Xms2g -Xmx2g -jar reality-core-assembly-*.jar run-validator \
   --keyalias node \
   --ip 185.216.177.201 \
   --collateral 0 \
-  --peer-id 183d00412b31b5f3de360bf6545c99effa9d94dbdba48b2f36010ef264b5b1cb532d6a8816843999d7166ea4b4f70e834f6b50f4be3c5dc95479068b576fd720 \
+  --peer-id a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234 \
   --l0-ip 185.216.177.201 \
   --startup-port 9000
 ```
@@ -315,7 +315,7 @@ You should see JSON output with your node information:
   "host": "185.216.177.201",
   "publicPort": 9000,
   "p2pPort": 9001,
-  "id": "183d00412b31b5f3de360bf6545c99effa9d94dbdba48b2f36010ef264b5b1cb532d6a8816843999d7166ea4b4f70e834f6b50f4be3c5dc95479068b576fd720"
+  "id": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234"
 }
 ```
 
